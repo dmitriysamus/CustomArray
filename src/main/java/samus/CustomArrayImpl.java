@@ -1,5 +1,6 @@
 package samus;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class CustomArrayImpl<T> implements CustomArray<T> {
@@ -41,7 +42,7 @@ public class CustomArrayImpl<T> implements CustomArray<T> {
 
     @Override
     public boolean add(T item) {
-        this.ensureCapacity(1);
+        ensureCapacity(1);
         data[size] = item;
         size++;
         return true;
@@ -80,7 +81,7 @@ public class CustomArrayImpl<T> implements CustomArray<T> {
     }
 
     @Override
-    public boolean addAll(int index, Object[] items) {
+    public boolean addAll(int index, T[] items) {
         rangeCheck(index);
         nullCheck(items);
 
@@ -94,7 +95,7 @@ public class CustomArrayImpl<T> implements CustomArray<T> {
         int addIndexStart = index;
         int addIndexFinish = index + items.length;
         for (int n = 0; addIndexStart < addIndexFinish; addIndexStart++, n++) {
-            newData[addIndexStart] = items[n++];
+            newData[addIndexStart] = items[n];
         }
 
         int nextIndex = addIndexFinish;
@@ -128,9 +129,9 @@ public class CustomArrayImpl<T> implements CustomArray<T> {
         rangeCheck(index);
         Object[] newData = new Object[size - 1];
         int n = 0;
-        for (int i = 0; i < size; i++, n++) {
+        for (int i = 0; i < size; i++) {
             if (i != index) {
-                newData[n] = data[i];
+                newData[n++] = data[i];
             }
         }
         --size;
@@ -210,6 +211,7 @@ public class CustomArrayImpl<T> implements CustomArray<T> {
 
     @Override
     public void ensureCapacity(int newElementsCount) {
+
         int needSize = size + newElementsCount;
         if (needSize <= data.length) {
             return;
@@ -244,7 +246,22 @@ public class CustomArrayImpl<T> implements CustomArray<T> {
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        Object[] newData = new Object[size];
+        for (int i = 0; i < size; i++) {
+            newData[i] = data[i];
+        }
+        return newData;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (int i = 0; i < size; ++i) {
+            sb.append(" " + data[i]);
+        }
+        sb.append(" ]");
+        return sb.toString();
     }
 
     private void rangeCheck(int index) {
